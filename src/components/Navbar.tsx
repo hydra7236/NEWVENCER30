@@ -12,6 +12,7 @@ const navLinks = [
   { label: "Gallery", href: "/gallery" },
   { label: "Developers", href: "/developers" },
   { label: "Contact", href: "/contact" },
+  { label: "Register", href: "/register" },
 ];
 
 const Navbar = memo(() => {
