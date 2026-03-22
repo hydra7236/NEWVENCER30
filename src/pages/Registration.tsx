@@ -44,7 +44,10 @@ const Registration = () => {
       await fetch(scriptURL, {
         method: "POST",
         mode: "no-cors",
-        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(data as any).toString(),
       });
 
       setIsRegistered(true);
