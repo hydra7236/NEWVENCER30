@@ -47,7 +47,7 @@ const Registration = () => {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams(data as any).toString(),
+        body: new URLSearchParams(data as Record<string, string>).toString(),
       });
 
       setIsRegistered(true);

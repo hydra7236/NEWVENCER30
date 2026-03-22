@@ -31,18 +31,6 @@ const Navbar = memo(() => {
     document.documentElement.classList.remove("light");
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (open) {
-      setOpen(false);
-      closeMenu();
-    }
-  }, [location.pathname]);
 
   const openMenu = useCallback(() => {
     if (busyRef.current) return;
@@ -123,6 +111,19 @@ const Navbar = memo(() => {
       },
     });
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      setOpen(false);
+      closeMenu();
+    }
+  }, [location.pathname, open, closeMenu]);
 
   const toggleMenu = useCallback(() => {
     const next = !open;

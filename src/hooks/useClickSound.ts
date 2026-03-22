@@ -7,7 +7,7 @@ export function playClickSound() {
   audio.play().catch(() => {});
 }
 
-export function useGlobalClickSound() {
+export function setupGlobalClickSound() {
   if (typeof window === "undefined") return;
 
   const handler = (e: MouseEvent) => {

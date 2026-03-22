@@ -53,11 +53,11 @@ const DomeGallery: React.FC<DomeGalleryProps> = ({
     };
   });
 
-  const updateTransforms = () => {
+  const updateTransforms = useCallback(() => {
     if (containerRef.current) {
       containerRef.current.style.transform = `translateZ(${-radius}px) rotateX(${rotation.current.x}deg) rotateY(${rotation.current.y}deg)`;
     }
-  };
+  }, [radius]);
 
   const animate = useCallback(() => {
     if (!isDragging.current && !isHovering.current) {
@@ -78,7 +78,7 @@ const DomeGallery: React.FC<DomeGalleryProps> = ({
 
     updateTransforms();
     requestRef.current = requestAnimationFrame(animate);
-  }, []);
+  }, [updateTransforms]);
 
   useEffect(() => {
     if (isMobile || radius <= 250) return;

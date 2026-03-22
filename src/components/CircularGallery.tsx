@@ -1,21 +1,22 @@
+/* eslint-disable */
 // @ts-nocheck
 import { Camera, Mesh, Plane, Program, Renderer, Texture, Transform } from 'ogl';
 import { useEffect, useRef } from 'react';
 import './CircularGallery.css';
 
-function debounce(func, wait) {
-  let timeout;
-  return function (...args) {
+function debounce(func: Function, wait: number) {
+  let timeout: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: any[]) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func.apply(this, args), wait);
   };
 }
 
-function lerp(p1, p2, t) {
+function lerp(p1: number, p2: number, t: number) {
   return p1 + (p2 - p1) * t;
 }
 
-function autoBind(instance) {
+function autoBind(instance: any) {
   const proto = Object.getPrototypeOf(instance);
   Object.getOwnPropertyNames(proto).forEach(key => {
     if (key !== 'constructor' && typeof instance[key] === 'function') {
@@ -24,7 +25,7 @@ function autoBind(instance) {
   });
 }
 
-function createTextTexture(gl, text, font = 'bold 30px monospace', color = 'black') {
+function createTextTexture(gl: any, text: string, font = 'bold 30px monospace', color = 'black') {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   context.font = font;
@@ -45,7 +46,15 @@ function createTextTexture(gl, text, font = 'bold 30px monospace', color = 'blac
 }
 
 class Title {
-  constructor({ gl, plane, renderer, text, textColor = '#545050', font = '30px sans-serif' }) {
+  gl: any;
+  plane: any;
+  renderer: any;
+  text: string;
+  textColor: string;
+  font: string;
+  mesh: any;
+
+  constructor({ gl, plane, renderer, text, textColor = '#545050', font = '30px sans-serif' }: any) {
     autoBind(this);
     this.gl = gl;
     this.plane = plane;
@@ -96,7 +105,35 @@ class Title {
 }
 
 class Media {
-  constructor({ geometry, gl, image, index, length, renderer, scene, screen, text, viewport, bend, textColor, borderRadius = 0, font }) {
+  extra: number;
+  geometry: any;
+  gl: any;
+  image: string;
+  index: number;
+  length: number;
+  renderer: any;
+  scene: any;
+  screen: any;
+  text: string;
+  viewport: any;
+  bend: number;
+  textColor: string;
+  borderRadius: number;
+  font: string;
+  program: any;
+  plane: any;
+  title: any;
+  x: number = 0;
+  speed: number = 0;
+  isBefore: boolean = false;
+  isAfter: boolean = false;
+  scale: number = 0;
+  imageScale: number = 1;
+  padding: number = 0;
+  width: number = 0;
+  widthTotal: number = 0;
+
+  constructor({ geometry, gl, image, index, length, renderer, scene, screen, text, viewport, bend, textColor, borderRadius = 0, font }: any) {
     this.extra = 0;
     this.geometry = geometry;
     this.gl = gl;
@@ -204,7 +241,7 @@ class Media {
     });
   }
 
-  update(scroll, direction) {
+  update(scroll: any, direction: string) {
     this.plane.position.x = this.x - scroll.current - this.extra;
     const x = this.plane.position.x;
     const H = this.viewport.width / 2;
@@ -246,7 +283,7 @@ class Media {
     }
   }
 
-  onResize({ screen, viewport } = {}) {
+  onResize({ screen, viewport }: any = {}) {
     if (screen) this.screen = screen;
     if (viewport) {
       this.viewport = viewport;
@@ -274,7 +311,33 @@ class Media {
 }
 
 class GalleryApp {
-  constructor(container, { items, bend, textColor = '#ffffff', borderRadius = 0, font = 'bold 30px Figtree', scrollSpeed = 2, scrollEase = 0.05, autoScroll = false, autoScrollInterval = 5000, imageScale = 1 } = {}) {
+  container: HTMLElement;
+  scrollSpeed: number;
+  scroll: any;
+  onCheckDebounce: any;
+  autoScroll: boolean;
+  autoScrollInterval: number;
+  imageScale: number;
+  screen: any;
+  viewport: any;
+  renderer: any;
+  gl: any;
+  camera: any;
+  scene: any;
+  planeGeometry: any;
+  mediasImages: any[] = [];
+  medias: any[] = [];
+  isDown: boolean = false;
+  start: number = 0;
+  autoScrollTimer: any;
+  raf: any;
+  boundOnResize: any;
+  boundOnWheel: any;
+  boundOnTouchDown: any;
+  boundOnTouchMove: any;
+  boundOnTouchUp: any;
+
+  constructor(container: HTMLElement, { items, bend, textColor = '#ffffff', borderRadius = 0, font = 'bold 30px Figtree', scrollSpeed = 2, scrollEase = 0.05, autoScroll = false, autoScrollInterval = 5000, imageScale = 1 }: any = {}) {
     this.container = container;
     this.scrollSpeed = scrollSpeed;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
@@ -326,7 +389,7 @@ class GalleryApp {
     this.planeGeometry = new Plane(this.gl, { heightSegments: 50, widthSegments: 100 });
   }
 
-  createMedias(items, bend = 1, textColor, borderRadius, font) {
+  createMedias(items: any[], bend = 1, textColor: string, borderRadius: number, font: string) {
     const defaultItems = [
       { image: 'https://picsum.photos/seed/1/800/600?grayscale', text: 'Bridge' },
       { image: 'https://picsum.photos/seed/2/800/600?grayscale', text: 'Desk Setup' },
@@ -367,13 +430,13 @@ class GalleryApp {
     });
   }
 
-  onTouchDown(e) {
+  onTouchDown(e: any) {
     this.isDown = true;
     this.scroll.position = this.scroll.current;
     this.start = e.touches ? e.touches[0].clientX : e.clientX;
   }
 
-  onTouchMove(e) {
+  onTouchMove(e: any) {
     if (!this.isDown) return;
     const x = e.touches ? e.touches[0].clientX : e.clientX;
     const distance = (this.start - x) * (this.scrollSpeed * 0.025);
@@ -385,7 +448,7 @@ class GalleryApp {
     this.onCheck();
   }
 
-  onWheel(e) {
+  onWheel(e: any) {
     const delta = e.deltaY || e.wheelDelta || e.detail;
     this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2;
     this.onCheckDebounce();
