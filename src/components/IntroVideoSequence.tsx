@@ -9,12 +9,13 @@ const IntroVideoSequence = ({ onComplete }: { onComplete: () => void }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Show skip button after 2.5 seconds
-    const timer = setTimeout(() => setShowSkip(true), 2500);
-    return () => clearTimeout(timer);
+    // Skip button logic moved to handleStart
+    return () => {};
   }, []);
 
   const handleStart = () => {
+    // Show skip button after 5 seconds of video start
+    setTimeout(() => setShowSkip(true), 5000);
     if (videoRef.current) {
       videoRef.current.muted = false;
       videoRef.current.play().then(() => {
@@ -47,9 +48,9 @@ const IntroVideoSequence = ({ onComplete }: { onComplete: () => void }) => {
     >
       <video
         ref={videoRef}
-        src="/intro.mp4"
+        src={`${import.meta.env.BASE_URL}intro.mp4`}
         playsInline
-        poster="/gallery/image1.jpg"
+        poster={`${import.meta.env.BASE_URL}gallery/image1.jpg`}
         onEnded={onComplete}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[85svh] md:h-full md:w-full object-cover"
       />

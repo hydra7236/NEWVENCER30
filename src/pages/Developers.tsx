@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Instagram, Github, Linkedin, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Instagram, Github, Linkedin, Circle } from "lucide-react";
 import cosmicsarjaPhoto from "@/assets/cosmicsarja-photo.png";
 
 interface Developer {
@@ -9,18 +8,22 @@ interface Developer {
   department: string;
   role: string;
   photo: string;
+  handle: string;
   instagram?: string;
   github?: string;
   linkedin?: string;
 }
+
+const basePath = import.meta.env.BASE_URL || '/';
 
 const developers: Developer[] = [
   {
     id: 0,
     name: "Cosmicsarja",
     department: "Artificial Intelligence and Data Science",
-    role: "Full Stack Developer",
+    role: "Lead Developer",
     photo: cosmicsarjaPhoto,
+    handle: "cosmicsarja",
     instagram: "https://instagram.com/cosmicsarja",
     github: "https://github.com/cosmicsarja",
     linkedin: "https://linkedin.com/in/cosmicsarja",
@@ -29,9 +32,10 @@ const developers: Developer[] = [
     id: 1,
     name: "Sahil Barbal",
     department: "Artificial Intelligence and Data Science",
-    role: "Backend and UI/UX",
-    photo: "/sahil.png",
-    instagram: "https://www.instagram.com/sahil7236sahil/?utm_source=ig_web_button_share_sheet",
+    role: "Frontend and Backend",
+    photo: `${basePath}sahil.png`,
+    handle: "sahilbarbal",
+    instagram: "https://www.instagram.com/sahil7236sahil/",
     github: "https://github.com/hydra7236",
     linkedin: "#",
   },
@@ -39,175 +43,139 @@ const developers: Developer[] = [
     id: 2,
     name: "Rohan Patil",
     department: "Artificial Intelligence and Data Science",
-    role: "Database and Frontend",
-    photo: "/rohan.png",
-    instagram: "https://www.instagram.com/justtt.rohan__?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+    role: "UI/UX Designer",
+    photo: `${basePath}rohan.png`,
+    handle: "rohanpatel",
+    instagram: "https://www.instagram.com/justtt.rohan__",
     github: "#",
     linkedin: "#",
   },
   {
     id: 3,
-    name: "Nivedita Akkimaradi",
+    name: "Nivedita A",
     department: "Artificial Intelligence and Data Science",
-    role: "Frontend and UI/UX",
-    photo: "https://i.pravatar.cc/300?img=9",
-    instagram: "https://www.instagram.com/nivedita_s_a21/?utm_source=ig_web_button_share_sheet",
+    role: "Backend Developer",
+    photo: "https://vencer--2k26.vercel.app/assets/nivedita-D5-M7LoH.png",
+    handle: "niveditaakkimaradi",
+    instagram: "https://www.instagram.com/nivedita_s_a21/",
     github: "#",
     linkedin: "#",
   },
 ];
 
 const Developers = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
-  const n = developers.length;
-  const radius = window.innerWidth < 768 ? 200 : 350; // Distance of cards from center
-  const angleDelta = 360 / n; // 90 degrees since 4 devs
-
-  // Auto-rotate logic
-  useEffect(() => {
-    if (isHovering) return;
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => prev + 1);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isHovering]);
-
-  const handleNext = () => setActiveIndex((prev) => prev + 1);
-  const handlePrev = () => setActiveIndex((prev) => prev - 1);
-
-  // Normalize current index for display
-  const currentIndex = ((activeIndex % n) + n) % n;
-
   return (
     <section className="relative min-h-screen py-24 flex flex-col items-center justify-center bg-background/50 overflow-hidden">
-      {/* Immersive Cyberpunk Backdrops */}
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none -z-10" />
-      <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[100px] pointer-events-none -z-10" />
-
+      {/* Cinematic Overlays */}
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(45,212,191,0.1),transparent_70%)] pointer-events-none" />
+      
       <div className="container px-4 text-center mb-16 relative z-10">
-        <motion.h1 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="font-display text-4xl sm:text-5xl tracking-widest fest-gradient-text mb-4 drop-shadow-[0_0_15px_rgba(45,212,191,0.5)]"
-        >
-          Meet the Developers
-        </motion.h1>
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="font-body text-white/70 max-w-2xl mx-auto text-lg"
-        >
-          The masterminds crafting the technical landscape of VENCER 2K26.
-        </motion.p>
-      </div>
-
-      {/* 3D Carousel Container */}
-      <div 
-        className="relative w-full h-[500px] sm:h-[600px] flex items-center justify-center"
-        style={{ perspective: "1200px" }}
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-      >
         <motion.div
-          className="relative w-full h-full flex items-center justify-center preserve-3d"
-          animate={{ rotateY: -activeIndex * angleDelta }}
-          transition={{ type: "spring", stiffness: 100, damping: 20 }}
-          style={{ transformStyle: "preserve-3d", cursor: "grab" }}
-          whileTap={{ cursor: "grabbing" }}
-          onPanEnd={(e, info) => {
-            const dragThreshold = 50;
-            if (info.offset.x < -dragThreshold) {
-              handleNext();
-            } else if (info.offset.x > dragThreshold) {
-              handlePrev();
-            }
-          }}
+           initial={{ opacity: 0, y: -20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8 }}
         >
-          {developers.map((dev, i) => {
-            const angle = i * angleDelta;
-            const isCenter = currentIndex === i;
-
-            return (
-              <div
-                key={dev.id}
-                className={`absolute top-1/2 left-1/2 -ml-[140px] -mt-[200px] sm:-ml-[160px] sm:-mt-[220px] w-[280px] h-[400px] sm:w-[320px] sm:h-[440px] rounded-2xl glass-pandora border-2 transition-all duration-300 flex flex-col items-center justify-center p-6 cursor-pointer shadow-2xl group
-                  ${isCenter ? 'border-primary/80 shadow-[0_0_30px_rgba(45,212,191,0.4)] scale-100 z-10' : 'border-white/10 opacity-60 scale-90 z-0'}
-                  hover:scale-105 hover:opacity-100 hover:border-primary/50
-                `}
-                style={{
-                  transform: `rotateY(${angle}deg) translateZ(${radius}px)`,
-                  backfaceVisibility: "hidden",
-                }}
-                onClick={(e) => {
-                  // Find shortest rotation path
-                  e.stopPropagation();
-                  let delta = i - currentIndex;
-                  if (delta > n / 2) delta -= n;
-                  if (delta < -n / 2) delta += n;
-                  setActiveIndex(activeIndex + delta);
-                }}
-              >
-                {/* Image Section */}
-                <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden mb-6 border-4 border-primary/20 group-hover:border-primary transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(45,212,191,0.6)]">
-                  <img src={dev.photo} alt={dev.name} className="w-full h-full object-cover" />
-                  {/* Inner glow on hover */}
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 mix-blend-overlay"></div>
-                </div>
-
-                {/* Details Section */}
-                <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white via-primary to-purple-400 mb-1 drop-shadow-[0_0_15px_rgba(45,212,191,0.8)] group-hover:drop-shadow-[0_0_25px_rgba(45,212,191,1)] transition-all">
-                  {dev.name}
-                </h3>
-                <p className="font-display text-xs sm:text-sm tracking-[0.2em] text-[#c084fc] mb-2 uppercase text-center font-bold relative z-10 drop-shadow-[0_0_10px_rgba(192,132,252,0.8)]">
-                  {dev.department}
-                </p>
-                <p className="text-sm sm:text-base text-white/90 font-semibold mb-8 max-w-full text-center drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
-                  {dev.role}
-                </p>
-
-                {/* Social Links - Reveal on Hover if center or make more prominent */}
-                <div className="flex gap-4 opacity-70 group-hover:opacity-100 transition-opacity">
-                  {dev.instagram && (
-                    <a href={dev.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:text-primary hover:bg-primary/20 hover:border-primary/50 hover:shadow-[0_0_15px_rgba(45,212,191,0.5)] transition-all" onClick={e => e.stopPropagation()}>
-                      <Instagram size={18} />
-                    </a>
-                  )}
-                  {dev.github && (
-                    <a href={dev.github} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:text-[#c084fc] hover:bg-purple-500/20 hover:border-purple-500/50 hover:shadow-[0_0_15px_rgba(192,132,252,0.5)] transition-all" onClick={e => e.stopPropagation()}>
-                      <Github size={18} />
-                    </a>
-                  )}
-                  {dev.linkedin && (
-                    <a href={dev.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:text-[#2dd4bf] hover:bg-teal-500/20 hover:border-teal-500/50 hover:shadow-[0_0_15px_rgba(45,212,191,0.5)] transition-all" onClick={e => e.stopPropagation()}>
-                      <Linkedin size={18} />
-                    </a>
-                  )}
-                </div>
-
-                {/* Ambient glow block behind card text mapping */}
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent pointer-events-none rounded-b-2xl"></div>
-              </div>
-            );
-          })}
+          <h1 className="font-display text-4xl sm:text-5xl tracking-[0.3em] font-black fest-gradient-text mb-4 drop-shadow-[0_0_20px_rgba(45,212,191,0.4)] uppercase">
+            Development Team
+          </h1>
+          <div className="w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto mb-6" />
+          <p className="font-body text-white/60 max-w-2xl mx-auto text-lg tracking-wide">
+            The masterminds crafting the technical landscape of VENCER 2K26.
+          </p>
         </motion.div>
       </div>
 
-      {/* Navigation Controls */}
-      <div className="flex gap-6 mt-8 relative z-20">
-        <button 
-          onClick={handlePrev}
-          className="w-14 h-14 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/30 backdrop-blur-md transition-all focus:outline-none hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] group"
-        >
-          <ChevronLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
-        </button>
-        <button 
-          onClick={handleNext}
-          className="w-14 h-14 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:border-white/30 backdrop-blur-md transition-all focus:outline-none hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] group"
-        >
-          <ChevronRight size={28} className="group-hover:translate-x-1 transition-transform" />
-        </button>
+      <div className="container px-4 relative z-10 w-full max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 place-items-center">
+          {developers.map((dev, index) => (
+            <motion.div
+              key={dev.id}
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1, duration: 0.6 }}
+              className="group relative w-full max-w-[320px] h-[480px] rounded-3xl overflow-hidden cursor-pointer border border-white/10 hover:border-primary/50 transition-all duration-500 bg-black/40 shadow-2xl"
+            >
+              {/* Profile Image with subtle zoom */}
+              <img 
+                src={dev.photo} 
+                alt={dev.name} 
+                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out group-hover:scale-105"
+              />
+
+              {/* Top Gradient Overlay */}
+              <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/80 to-transparent pointer-events-none" />
+
+              {/* Top Label */}
+              <div className="absolute top-6 left-6 z-20">
+                <div className="font-display text-[10px] tracking-[0.2em] text-primary uppercase font-bold mb-1 opacity-80">
+                  {dev.role}
+                </div>
+                <h3 className="font-heading text-xl font-black text-white tracking-wider">
+                  {dev.name}
+                </h3>
+              </div>
+
+              {/* Bottom Status Bar (Revealed on Hover) */}
+              <div className="absolute inset-x-0 bottom-0 z-30 translate-y-[85%] group-hover:translate-y-0 transition-transform duration-500 ease-out">
+                {/* Blur Background */}
+                <div className="absolute inset-0 bg-black/60 backdrop-blur-xl border-t border-white/10" />
+                
+                <div className="relative p-6">
+                  {/* Status & Handle */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                      <Circle size={8} className="fill-green-500 text-green-500 animate-pulse" />
+                      <span className="font-mono text-[10px] text-green-500 uppercase tracking-widest font-bold">Online</span>
+                    </div>
+                    <span className="font-mono text-[10px] text-white/40 tracking-wider">@{dev.handle}</span>
+                  </div>
+
+                  {/* Social Grid */}
+                  <div className="flex items-center justify-center gap-4">
+                    {dev.instagram && (
+                      <a 
+                        href={dev.instagram} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-white hover:bg-pink-500 hover:text-white transition-all duration-300"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Instagram size={18} />
+                      </a>
+                    )}
+                    {dev.github && (
+                      <a 
+                        href={dev.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all duration-300"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Github size={18} />
+                      </a>
+                    )}
+                    {dev.linkedin && (
+                      <a 
+                        href={dev.linkedin} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="w-10 h-10 rounded-xl bg-[#0077b5]/10 border border-[#0077b5]/20 flex items-center justify-center text-white hover:bg-[#0077b5] hover:text-white transition-all duration-300"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Linkedin size={18} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Accent Glow */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-primary/20 to-transparent" />
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -135,7 +135,7 @@ const EventDetailModal = forwardRef<HTMLDivElement, EventDetailModalProps>(({ ev
             )}
 
             <a
-              href="/VENCER_2K26_Rulebook.pdf"
+              href={`${import.meta.env.BASE_URL}VENCER_2K26_Rulebook.pdf`}
               download
               className="flex items-center justify-center gap-2 w-full font-display text-xs sm:text-sm tracking-wider px-6 py-3 rounded-xl border-2 border-primary/40 bg-primary/10 text-primary font-bold hover:bg-primary/20 hover:shadow-[0_0_20px_hsl(var(--fest-teal)_/_0.2)] transition-all duration-300 hover:scale-[1.02]"
             >
