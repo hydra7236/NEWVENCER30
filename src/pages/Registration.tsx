@@ -20,7 +20,7 @@ const Registration = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Your actual Google Apps Script Web App URL
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwnU3NIAco_E2XUwajf2LUr_AhXtH_SUYTSVySapheran1Ffy9PfSdBUT4J5N8bc_x8/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwGbNdfEUqRfsCjmhO5oLOMa2iVthajN4DyQN9hCga55MzF7ZT2o3rz1rx6EMpg5oeB/exec";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
