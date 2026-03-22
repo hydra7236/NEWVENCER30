@@ -17,19 +17,51 @@ const Registration = () => {
   });
   const [isRegistered, setIsRegistered] = useState(false);
   const [registrationId, setRegistrationId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Replace this with your actual Google Apps Script Web App URL
+  const scriptURL = "https://script.google.com/macros/s/AKfycby-YOUR-SCRIPT-ID/exec";
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+
     const id = Date.now().toString();
     setRegistrationId(id);
-    setIsRegistered(true);
-    toast.success("Registration Successful!", {
-      description: "Your digital pass has been generated.",
-    });
+
+    try {
+      // Sending data to Google Apps Script
+      await fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors", // Required for Google Apps Script if not handling CORS
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          ...formData, 
+          registrationId: id,
+          timestamp: new Date().toISOString()
+        }),
+      });
+
+      setIsRegistered(true);
+      toast.success("Registration Successful!", {
+        description: "Your data has been saved and digital pass generated.",
+      });
+    } catch (error) {
+      console.error("Error!", error);
+      toast.error("Submission failed. Please check your connection.");
+      // Even if fetch fails (due to CORS in some cases), we can still show the QR
+      // but usually we want to confirm data saving first.
+      // For this demo, let's allow pass generation anyway if you want
+      // setIsRegistered(true); 
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const qrData = `VENCER2026\nID: ${registrationId}\nName: ${formData.name}\nEvent: ${formData.event}`;
@@ -150,8 +182,12 @@ const Registration = () => {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button type="submit" className="w-full bg-primary hover:bg-primary/80 text-black font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(0,247,255,0.4)] transition-all duration-300 font-display">
-                      Generate Pass
+                    <Button 
+                      type="submit" 
+                      disabled={isLoading}
+                      className="w-full bg-primary hover:bg-primary/80 text-black font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(0,247,255,0.4)] transition-all duration-300 font-display"
+                    >
+                      {isLoading ? "Generating..." : "Generate Pass"}
                     </Button>
                   </CardFooter>
                 </form>
