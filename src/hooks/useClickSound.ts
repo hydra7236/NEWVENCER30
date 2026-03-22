@@ -22,5 +22,9 @@ export function useGlobalClickSound() {
   };
 
   document.addEventListener("click", handler);
-  return () => document.removeEventListener("click", handler);
+  document.addEventListener("touchstart", handler);
+  return () => {
+    document.removeEventListener("click", handler);
+    document.removeEventListener("touchstart", handler);
+  };
 }
