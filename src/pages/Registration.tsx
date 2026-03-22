@@ -35,17 +35,16 @@ const Registration = () => {
 
     try {
       // Sending data to Google Apps Script
+      const data = { 
+        ...formData, 
+        registrationId: id,
+        timestamp: new Date().toISOString()
+      };
+
       await fetch(scriptURL, {
         method: "POST",
-        mode: "no-cors", // Required for Google Apps Script if not handling CORS
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          ...formData, 
-          registrationId: id,
-          timestamp: new Date().toISOString()
-        }),
+        mode: "no-cors",
+        body: JSON.stringify(data),
       });
 
       setIsRegistered(true);
@@ -64,7 +63,7 @@ const Registration = () => {
     }
   };
 
-  const qrData = `VENCER2026\nID: ${registrationId}\nName: ${formData.name}\nEvent: ${formData.event}`;
+  const qrLink = `${scriptURL}?id=${registrationId}`;
 
   const downloadQR = () => {
     const svg = document.getElementById("qr-code-svg");
@@ -214,7 +213,7 @@ const Registration = () => {
                     <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <QRCodeSVG
                       id="qr-code-svg"
-                      value={qrData}
+                      value={qrLink}
                       size={200}
                       level="H"
                       includeMargin={true}
