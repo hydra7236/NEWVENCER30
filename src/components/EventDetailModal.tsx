@@ -1,4 +1,5 @@
 import { useEffect, useCallback, forwardRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Trophy, IndianRupee, Clock, Users, MapPin, BookOpen, Download } from "lucide-react";
 import type { Event } from "@/data/events";
@@ -32,9 +33,17 @@ const EventDetailModal = forwardRef<HTMLDivElement, EventDetailModalProps>(({ ev
     }
   }, [event, handleKeyDown]);
 
-  if (!event) return null;
+      const navigate = useNavigate();
 
-  const colors = categoryColors[event.category] || categoryColors.Technical;
+      if (!event) return null;
+
+      const colors = categoryColors[event.category] || categoryColors.Technical;
+
+      const handleRegisterClick = () => {
+        const dept = event.branch || (event.category === "Cultural" ? "General Cultural" : event.category === "Gaming" ? "General Gaming" : "Tribes");
+        navigate(`/register?event=${encodeURIComponent(event.title)}&dept=${encodeURIComponent(dept)}`);
+        onClose();
+      };
 
   return (
     <AnimatePresence>
@@ -143,7 +152,7 @@ const EventDetailModal = forwardRef<HTMLDivElement, EventDetailModalProps>(({ ev
               Download Rulebook
             </a>
             <button
-              onClick={() => onRegister?.(event.formLink)}
+              onClick={handleRegisterClick}
               className="flex items-center justify-center gap-2 w-full font-display text-xs sm:text-sm tracking-wider px-6 py-3 rounded-xl bg-gradient-to-r from-primary via-fest-cyan to-fest-blue text-primary-foreground font-bold hover:shadow-[0_0_30px_hsl(var(--fest-teal)_/_0.4)] transition-all duration-300 hover:scale-[1.02]"
             >
               Register Now

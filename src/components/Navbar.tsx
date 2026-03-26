@@ -32,11 +32,10 @@ const Navbar = memo(() => {
   }, []);
 
 
-  const openMenu = useCallback(() => {
-    if (busyRef.current) return;
-    busyRef.current = true;
-    document.body.style.overflow = "hidden";
 
+
+  const openMenuAction = useCallback(() => {
+    document.body.style.overflow = "hidden";
     const overlay = overlayRef.current;
     const layers = layersRef.current
       ? Array.from(layersRef.current.querySelectorAll(".menu-layer"))
@@ -44,73 +43,42 @@ const Navbar = memo(() => {
     const items = itemsRef.current.filter(Boolean);
     const numbers = numbersRef.current.filter(Boolean);
 
-    if (!overlay) { busyRef.current = false; return; }
+    if (!overlay) return;
 
-    // Set initial states
-    gsap.set(overlay, { display: "flex", xPercent: 100 });
+    const tl = gsap.timeline();
     gsap.set(layers, { xPercent: 100 });
     gsap.set(items, { yPercent: 120, rotate: 8, opacity: 0 });
     gsap.set(numbers, { opacity: 0 });
+    gsap.set(overlay, { xPercent: 100 });
 
-    const tl = gsap.timeline({
-      onComplete: () => { busyRef.current = false; },
-    });
-
-    // Stagger the color layers in
     layers.forEach((layer, i) => {
       tl.to(layer, { xPercent: 0, duration: 0.5, ease: "power4.out" }, i * 0.06);
     });
-
-    // Main panel slides in
     tl.to(overlay, { xPercent: 0, duration: 0.6, ease: "power4.out" }, 0.12);
-
-    // Menu items stagger up
-    tl.to(
-      items,
-      {
-        yPercent: 0,
-        rotate: 0,
-        opacity: 1,
-        duration: 0.9,
-        ease: "power4.out",
-        stagger: 0.08,
-      },
-      0.3
-    );
-
-    // Numbers fade in
-    tl.to(
-      numbers,
-      {
-        opacity: 0.4,
-        duration: 0.5,
-        ease: "power2.out",
-        stagger: 0.06,
-      },
-      0.4
-    );
+    tl.to(items, { yPercent: 0, rotate: 0, opacity: 1, duration: 0.9, ease: "power4.out", stagger: 0.08 }, 0.3);
+    tl.to(numbers, { opacity: 0.4, duration: 0.5, ease: "power2.out", stagger: 0.06 }, 0.4);
   }, []);
 
-  const closeMenu = useCallback(() => {
+  const closeMenuAction = useCallback(() => {
+    document.body.style.overflow = "";
     const overlay = overlayRef.current;
     const layers = layersRef.current
       ? Array.from(layersRef.current.querySelectorAll(".menu-layer"))
       : [];
-
     if (!overlay) return;
-    document.body.style.overflow = "";
 
     gsap.to([overlay, ...layers], {
       xPercent: 100,
       duration: 0.35,
       ease: "power3.in",
       stagger: 0.02,
-      onComplete: () => {
-        gsap.set(overlay, { display: "none" });
-        busyRef.current = false;
-      },
     });
   }, []);
+
+  useEffect(() => {
+    if (open) openMenuAction();
+    else closeMenuAction();
+  }, [open, openMenuAction, closeMenuAction]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -119,23 +87,19 @@ const Navbar = memo(() => {
   }, []);
 
   useEffect(() => {
-    if (open) {
+    if (open && location.pathname) {
       setOpen(false);
-      closeMenu();
     }
-  }, [location.pathname, open, closeMenu]);
+  }, [location.pathname]);
 
-  const toggleMenu = useCallback(() => {
-    const next = !open;
-    setOpen(next);
-    if (next) openMenu();
-    else closeMenu();
-  }, [open, openMenu, closeMenu]);
+  const toggleMenu = () => {
+    setOpen(prev => !prev);
+  };
 
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-[600] transition-all duration-500 ${
           scrolled
             ? "glass-pandora shadow-[0_4px_30px_hsl(var(--fest-teal)_/_0.08)]"
             : "bg-transparent"
@@ -144,7 +108,7 @@ const Navbar = memo(() => {
         aria-label="Main navigation"
       >
         <div className="container flex items-center justify-between h-14 sm:h-16">
-          <Link to="/" className="flex items-center gap-2 z-[60]" aria-label="VENCER Home">
+          <Link to="/" className="flex items-center gap-2 z-[60]" aria-label="VENCER Home" onClick={() => setOpen(false)}>
             <img
               src={vencerLogo}
               alt="VENCER"
@@ -198,7 +162,7 @@ const Navbar = memo(() => {
       </nav>
 
       {/* Staggered color layers */}
-      <div ref={layersRef} className="fixed inset-0 z-[51] pointer-events-none lg:hidden">
+      <div ref={layersRef} className="fixed inset-0 z-[580] pointer-events-none lg:hidden" style={{ visibility: open ? "visible" : "hidden" }}>
         <div
           className="menu-layer absolute inset-0"
           style={{
@@ -218,10 +182,12 @@ const Navbar = memo(() => {
       {/* Fullscreen menu overlay */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 z-[52] hidden flex-col justify-center lg:hidden"
-        style={{
-          background:
-            "linear-gradient(160deg, hsl(var(--background)) 0%, hsl(220 30% 8%) 50%, hsl(var(--background)) 100%)",
+        className="fixed inset-0 z-[590] flex-col justify-center lg:hidden"
+        style={{ 
+          display: "flex", 
+          visibility: open ? "visible" : "hidden",
+          pointerEvents: open ? "all" : "none",
+          background: "linear-gradient(160deg, hsl(var(--background)) 0%, hsl(220 30% 8%) 50%, hsl(var(--background)) 100%)" 
         }}
       >
         {/* Subtle glow accent */}
@@ -235,6 +201,7 @@ const Navbar = memo(() => {
                 <Link
                   ref={(el) => { itemsRef.current[i] = el; }}
                   to={l.href}
+                  onClick={() => setOpen(false)}
                   className={`group flex items-baseline gap-4 py-3 transition-colors duration-300 ${
                     location.pathname === l.href
                       ? "text-primary"

@@ -19,7 +19,7 @@ const socialLinks = [
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   return (
-    <footer ref={ref} className="border-t border-border/20 py-8 sm:py-12 relative">
+    <footer ref={ref} className="border-t border-border/20 py-8 sm:py-12 pb-24 sm:pb-12 relative">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,hsl(175_80%_40%_/_0.03)_0%,transparent_50%)]" />
       <div className="container px-4 relative">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
@@ -58,8 +58,9 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           </div>
         </div>
         <div className="border-t border-border/20 pt-4 sm:pt-6 text-center">
-          <p className="text-[10px] sm:text-xs text-muted-foreground">
-            © 2026 VENCER. All rights reserved. | AITM, Belagavi
+          <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center justify-center gap-2">
+            © 2026 VENCER. All rights reserved. | AITM, Belagavi 
+            <Link to="/admin" className="opacity-60 hover:opacity-100 text-primary transition-opacity ml-2">• Admin Portal</Link>
           </p>
         </div>
       </div>

@@ -5,7 +5,6 @@ import { branches, culturalEvents, gamingEvents } from "@/data/events";
 import type { Event } from "@/data/events";
 import EventCard from "@/components/EventCard";
 import EventDetailModal from "@/components/EventDetailModal";
-import RegistrationModal from "@/components/RegistrationModal";
 
 const tabs = [
   { key: "branches" as const, label: "Tribe Events" },
@@ -18,7 +17,6 @@ const Events = () => {
   const [activeBranch, setActiveBranch] = useState(0);
   const [activeTab, setActiveTab] = useState<"branches" | "cultural" | "gaming">("branches");
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [registrationLink, setRegistrationLink] = useState<string | null>(null);
 
   // Handle branch from URL query params
   useEffect(() => {
@@ -57,10 +55,6 @@ const Events = () => {
 
   const branchEvents = getEventsForTab();
 
-  const handleRegister = useCallback((formLink: string) => {
-    setSelectedEvent(null);
-    setRegistrationLink(formLink);
-  }, []);
 
   return (
     <section className="relative py-20 pt-24 sm:py-24 sm:pt-28 min-h-screen">
@@ -164,11 +158,6 @@ const Events = () => {
       <EventDetailModal
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
-        onRegister={handleRegister}
-      />
-      <RegistrationModal
-        formLink={registrationLink}
-        onClose={() => setRegistrationLink(null)}
       />
     </section>
   );

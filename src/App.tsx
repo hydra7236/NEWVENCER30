@@ -22,6 +22,9 @@ const Gallery = lazy(() => import("./pages/Gallery"));
 const Developers = lazy(() => import("./pages/Developers"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Registration = lazy(() => import("./pages/Registration"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const AdminScanner = lazy(() => import("./pages/AdminScanner"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -81,6 +84,10 @@ const App = () => {
                   <Route path="/developers" element={<Developers />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/register" element={<Registration />} />
+                  <Route path="/admin" element={<AdminLogin />} />
+                  <Route path="/admin/login" element={<AdminLogin />} />
+                  <Route path="/admin/scanner" element={<AdminScanner />} />
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
               </Routes>

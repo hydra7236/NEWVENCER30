@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Volume2, VolumeX, Play, ArrowRight } from "lucide-react";
+import pandoraBg from "@/assets/pandora-bg.png";
+import JellyfishBackground from "./JellyfishBackground";
 
 const IntroVideoSequence = ({ onComplete }: { onComplete: () => void }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -60,10 +62,25 @@ const IntroVideoSequence = ({ onComplete }: { onComplete: () => void }) => {
         {!isPlaying && (
           <motion.div
             initial={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-            transition={{ duration: 0.8 }}
-            className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-10 backdrop-blur-md"
+            className="absolute inset-0 bg-black flex flex-col items-center justify-center z-10"
           >
+            {/* Base background to match Hero section */}
+            <div className="absolute inset-0 z-[-2]">
+              <img
+                src={pandoraBg}
+                alt=""
+                className="w-full h-full object-cover"
+                loading="eager"
+              />
+              <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+            </div>
+
+            {/* Jellyfish Layer */}
+            <div className="absolute inset-0 z-[-1] opacity-60">
+               <JellyfishBackground />
+            </div>
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
