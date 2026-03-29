@@ -8,7 +8,7 @@ const getGalleryImages = () => {
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
     return `${basePath}${cleanPath}`;
   };
-  
+
   const images = [
     getPath('/gallery/20250408_123809.jpg'),
     getPath('/gallery/20250408_131102.jpg'),
@@ -41,7 +41,7 @@ const getGalleryImages = () => {
     getPath('/gallery/20250408_205240(0).jpg'),
     getPath('/gallery/20250409_210320(0).jpg'),
   ];
-  
+
   // Showing all available unique images from the folder
   return images.map((url, i) => ({
     url: url,
@@ -66,7 +66,7 @@ const Gallery = () => {
     <div className="pt-24 min-h-screen flex flex-col bg-background/50 relative overflow-hidden">
       {/* Immersive background effects */}
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(45,212,191,0.05),transparent_70%)] pointer-events-none" />
-      
+
       <div className="container px-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -100,7 +100,7 @@ const Gallery = () => {
                 className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out scale-100 group-hover:scale-110"
                 loading="lazy"
               />
-              
+
               {/* Overlay with subtle Vencer text */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-4">
                 <p className="font-display text-[10px] tracking-widest text-primary uppercase mb-1">
@@ -119,7 +119,7 @@ const Gallery = () => {
         </div>
 
         {/* Description Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -128,14 +128,14 @@ const Gallery = () => {
           <div className="glass-pandora p-8 sm:p-12 rounded-3xl border border-primary/20 backdrop-blur-xl relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.3)]">
             <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/10 rounded-full blur-[80px]" />
             <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-500/10 rounded-full blur-[80px]" />
-            
+
             <h3 className="font-display text-2xl sm:text-3xl tracking-wider text-white mb-6 uppercase">
               The Spirit of <span className="fest-gradient-text">AITM</span>
             </h3>
             <p className="font-body text-white/70 text-lg leading-relaxed">
-              Welcome to the visual legacy of Angadi Institute of Technology and Management (AITM). 
-              Our gallery is a testament to the vibrant energy, relentless innovation, and unbreakable 
-              camaraderie that define our campus life. From electrifying nights of VENCER to insightful 
+              Welcome to the visual legacy of Angadi Institute of Technology and Management (AITM).
+              Our gallery is a testament to the vibrant energy, relentless innovation, and unbreakable
+              camaraderie that define our campus life. From electrifying nights of VENCER to insightful
               technical exposures, every frame captures the passion that makes our college a hub of excellence.
             </p>
           </div>
@@ -152,15 +152,15 @@ const Gallery = () => {
             className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 sm:p-8"
           >
             <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-[101]">
-              <button 
+              <button
                 onClick={() => setSelectedImage(null)}
                 className="flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-6 py-3 rounded-full font-display text-xs tracking-widest backdrop-blur-md border border-white/10"
               >
                 <ArrowLeft size={18} />
                 <span>BACK</span>
               </button>
-              
-              <button 
+
+              <button
                 onClick={() => handleDownload(selectedImage)}
                 className="flex items-center gap-2 text-black bg-primary hover:bg-primary/90 px-6 py-3 rounded-full font-display text-xs tracking-widest font-bold transition-all shadow-[0_0_20px_rgba(45,212,191,0.5)]"
               >
