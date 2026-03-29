@@ -14,6 +14,7 @@ const navLinks = [
   { label: "Developers", href: "/developers" },
   { label: "Contact", href: "/contact" },
   { label: "Register", href: "/register" },
+  { label: "Admin", href: "/admin" },
 ];
 
 const Navbar = memo(() => {
@@ -251,7 +252,7 @@ const Navbar = memo(() => {
                     ref={(el) => { numbersRef.current[i] = el; }}
                     className="font-body text-xs text-muted-foreground/40 w-6 tabular-nums"
                   >
-                    0{i + 1}
+                    {(i + 1).toString().padStart(2, '0')}
                   </span>
                   <span className="font-display text-3xl sm:text-4xl tracking-wider uppercase group-hover:text-glow-teal transition-all duration-300">
                     {l.label}
