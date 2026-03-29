@@ -1,0 +1,39 @@
+{
+  "name": "VENCER 2K26 — National Level Techno-Cultural Fest",
+  "short_name": "Vencer 2k26",
+  "description": "The flagship techno-cultural fest of AITM Belagavi.",
+  "theme_color": "#0d1117",
+  "background_color": "#0d1117",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "id": "/",
+  "icons": [
+    {
+      "src": "/vencer-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/vencer-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "entertainment"],
+  "shortcuts": [
+    {
+      "name": "Events",
+      "url": "/#/branches",
+      "description": "Explore Techno-Cultural Events"
+    },
+    {
+      "name": "Gallery",
+      "url": "/#/gallery",
+      "description": "View Vencer Moments"
+    }
+  ]
+}

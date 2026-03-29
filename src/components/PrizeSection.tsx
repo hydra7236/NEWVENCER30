@@ -13,7 +13,7 @@ const PrizeSection = () => {
           className="text-center mb-16"
         >
           <h2 className="font-display text-3xl sm:text-4xl tracking-wider fest-gradient-text mb-4">Prize Pool</h2>
-          <p className="font-display text-5xl sm:text-7xl text-foreground text-glow-orange mt-6">₹5,00,000+</p>
+          <p className="font-display text-5xl sm:text-7xl text-foreground text-glow-orange mt-6">₹50,000+</p>
           <p className="font-heading text-lg text-muted-foreground mt-4">in prizes across all events</p>
         </motion.div>
 

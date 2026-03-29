@@ -10,6 +10,22 @@ const getGalleryImages = () => {
   };
   
   const images = [
+    getPath('/gallery/20250408_123809.jpg'),
+    getPath('/gallery/20250408_131102.jpg'),
+    getPath('/gallery/20250408_185333.jpg'),
+    getPath('/gallery/20250408_185334.jpg'),
+    getPath('/gallery/20250408_185335.jpg'),
+    getPath('/gallery/20250408_190851.jpg'),
+    getPath('/gallery/20250408_190853.jpg'),
+    getPath('/gallery/20250408_204951.jpg'),
+    getPath('/gallery/20250408_204959.jpg'),
+    getPath('/gallery/20250408_205251.jpg'),
+    getPath('/gallery/20250408_210601.jpg'),
+    getPath('/gallery/20250408_210613.jpg'),
+    getPath('/gallery/20250409_205514.jpg'),
+    getPath('/gallery/20250409_205523.jpg'),
+    getPath('/gallery/20250409_210210.jpg'),
+    getPath('/gallery/20250409_213212.jpg'),
     getPath('/gallery/image1.jpg'),
     getPath('/gallery/image2.jpg'),
     getPath('/gallery/image3.jpg'),
@@ -20,11 +36,15 @@ const getGalleryImages = () => {
     getPath('/gallery/media__1773941054853.jpg'),
     getPath('/gallery/media__1773941054874.jpg'),
     getPath('/gallery/media__1773941054928.jpg'),
+    getPath('/gallery/20250408_123809(0).jpg'),
+    getPath('/gallery/20250408_123810(0).jpg'),
+    getPath('/gallery/20250408_205240(0).jpg'),
+    getPath('/gallery/20250409_210320(0).jpg'),
   ];
   
-  // Replicating a larger set of images for the grid
-  return Array.from({ length: 24 }).map((_, i) => ({
-    url: images[i % images.length],
+  // Showing all available unique images from the folder
+  return images.map((url, i) => ({
+    url: url,
     title: `Vencer Moment ${i + 1}`,
   }));
 };

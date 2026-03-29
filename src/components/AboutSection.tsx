@@ -4,10 +4,10 @@ import { useRef } from "react";
 import { Zap, Users, Trophy, Star } from "lucide-react";
 
 const stats = [
-  { icon: Users, value: "5000+", label: "Participants", accent: "fest-teal" },
-  { icon: Trophy, value: "50+", label: "Events", accent: "fest-cyan" },
-  { icon: Zap, value: "₹5L+", label: "Prize Pool", accent: "fest-orange" },
-  { icon: Star, value: "6", label: "Tribes", accent: "fest-purple" },
+  { icon: Users, value: "500+", label: "Participants", accent: "fest-teal" },
+  { icon: Trophy, value: "35+", label: "Events", accent: "fest-cyan" },
+  { icon: Zap, value: "₹50,000+", label: "Prize Pool", accent: "fest-orange" },
+  { icon: Star, value: "8", label: "Tribes", accent: "fest-purple" },
 ];
 
 const AboutSection = () => {

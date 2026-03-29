@@ -3,33 +3,25 @@ import { Calendar, Clock } from "lucide-react";
 
 const schedule = [
   {
-    day: "Day 1 — March 20",
+    day: "Day 1 — April 10",
     events: [
       { time: "9:00 AM", title: "Inauguration Ceremony", type: "Ceremony" },
-      { time: "10:30 AM", title: "Technical Events Begin", type: "Technical" },
-      { time: "2:00 PM", title: "Workshop: AI & ML", type: "Workshop" },
-      { time: "5:00 PM", title: "Gaming Tournaments", type: "Gaming" },
-      { time: "7:00 PM", title: "Cultural Night — DJ", type: "Cultural" },
+      { time: "10:30 AM", title: "Bug Crush & AI Prompt Battle", type: "Technical" },
+      { time: "12:00 PM", title: "Bridge Making & TinkerCad", type: "Technical" },
+      { time: "2:00 PM", title: "Pandora Logic Wars & Robo Race", type: "Technical" },
+      { time: "4:30 PM", title: "BGMI & FIFA Gaming", type: "Gaming" },
+      { time: "7:00 PM", title: "Vocal Fusion & Rhythm Riot", type: "Cultural" },
     ],
   },
   {
-    day: "Day 2 — March 21",
+    day: "Day 2 — April 11",
     events: [
-      { time: "9:00 AM", title: "Hackathon Kickoff", type: "Technical" },
-      { time: "11:00 AM", title: "Robo Wars Arena", type: "Technical" },
-      { time: "2:00 PM", title: "Dance & Music Competitions", type: "Cultural" },
-      { time: "4:00 PM", title: "E-Sports Finals", type: "Gaming" },
-      { time: "7:00 PM", title: "Battle of Bands", type: "Cultural" },
-    ],
-  },
-  {
-    day: "Day 3 — March 22",
-    events: [
-      { time: "9:00 AM", title: "Hackathon Judging", type: "Technical" },
-      { time: "11:00 AM", title: "Fashion Walk", type: "Cultural" },
-      { time: "2:00 PM", title: "Short Film Screening", type: "Cultural" },
-      { time: "4:00 PM", title: "Valedictory & Prize Distribution", type: "Ceremony" },
-      { time: "7:00 PM", title: "Closing Ceremony & Star Night", type: "Cultural" },
+      { time: "9:00 AM", title: "Design Doodle & Eva Intellect", type: "Technical" },
+      { time: "11:00 AM", title: "Robo Race & Do or Die Arena", type: "Technical" },
+      { time: "2:00 PM", title: "Dance & Music Showdown", type: "Cultural" },
+      { time: "4:00 PM", title: "Mr & Miss Vencer Finals", type: "Cultural" },
+      { time: "6:00 PM", title: "Valedictory & Prize Distribution", type: "Ceremony" },
+      { time: "8:00 PM", title: "Grand Finale & DJ Night", type: "Cultural" },
     ],
   },
 ];
@@ -45,11 +37,11 @@ const ScheduleSection = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h2 className="font-display text-3xl sm:text-4xl tracking-wider fest-gradient-text mb-4">Event Schedule</h2>
-          <p className="font-body text-muted-foreground">Three days of non-stop action</p>
+          <h2 className="font-display text-3xl sm:text-4xl tracking-wider fest-gradient-text mb-4 uppercase">Event Schedule</h2>
+          <p className="font-body text-muted-foreground">The ultimate two-day techno-cultural experience</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {schedule.map((day, di) => (
             <motion.div
               key={day.day}

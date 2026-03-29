@@ -43,6 +43,7 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [eventFilter, setEventFilter] = useState("all");
+  const [deptFilter, setDeptFilter] = useState("all");
   const navigate = useNavigate();
 
   // REPLACE WITH YOUR ACTUAL GOOGLE APPS SCRIPT WEB APP URL
@@ -73,6 +74,35 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleAttendanceToggle = async (id: string, currentStatus: boolean | string) => {
+    const isPresent = currentStatus === true || currentStatus === "true" || currentStatus === "Present";
+    const newStatus = !isPresent;
+    
+    // Optimistic update
+    setParticipants(prev => prev.map(p => 
+      p.id === id ? { ...p, attendance: newStatus ? "Present" : "Absent" } : p
+    ));
+
+    try {
+      await fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify({
+          type: "attendance",
+          id: id,
+          status: newStatus ? "Present" : "Absent",
+          timestamp: new Date().toISOString()
+        }),
+      });
+      toast.success(`Marked ${id} as ${newStatus ? "Present" : "Absent"}`);
+    } catch (error) {
+      console.error("Update failed:", error);
+      toast.error("Failed to update status on server");
+      // Revert on failure
+      fetchData();
+    }
+  };
+
   useEffect(() => {
     // Auth check
     const isLoggedIn = localStorage.getItem("adminLoggedIn");
@@ -86,10 +116,25 @@ const AdminDashboard = () => {
   const stats = useMemo(() => {
     const total = participants.length;
     const presentCount = participants.filter(p => p.attendance === true || p.attendance === "true" || p.attendance === "Present").length;
+    
+    // Department breakdown
+    const deptBreakdown: Record<string, { total: number, present: number }> = {};
+    participants.forEach(p => {
+      const dept = p.department || "Unknown";
+      if (!deptBreakdown[dept]) {
+        deptBreakdown[dept] = { total: 0, present: 0 };
+      }
+      deptBreakdown[dept].total++;
+      if (p.attendance === true || p.attendance === "true" || p.attendance === "Present") {
+        deptBreakdown[dept].present++;
+      }
+    });
+
     return {
       total,
       present: presentCount,
-      absent: total - presentCount
+      absent: total - presentCount,
+      departments: deptBreakdown
     };
   }, [participants]);
 
@@ -98,13 +143,19 @@ const AdminDashboard = () => {
       const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           p.id.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesEvent = eventFilter === "all" || p.event === eventFilter;
-      return matchesSearch && matchesEvent;
+      const matchesDept = deptFilter === "all" || p.department === deptFilter;
+      return matchesSearch && matchesEvent && matchesDept;
     });
-  }, [participants, searchTerm, eventFilter]);
+  }, [participants, searchTerm, eventFilter, deptFilter]);
 
   const uniqueEvents = useMemo(() => {
     const events = new Set(participants.map(p => p.event));
-    return Array.from(events);
+    return Array.from(events).sort();
+  }, [participants]);
+
+  const uniqueDepts = useMemo(() => {
+    const depts = new Set(participants.map(p => p.department));
+    return Array.from(depts).filter(Boolean).sort();
   }, [participants]);
 
   const handleLogout = () => {
@@ -113,18 +164,18 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-white selection:bg-primary/30">
+    <div className="min-h-screen bg-[#030712] text-white selection:bg-primary/30 pt-16 sm:pt-20">
       {/* Sidebar-like top nav */}
-      <div className="border-b border-white/5 bg-black/40 backdrop-blur-xl sticky top-0 z-50 pt-8 sm:pt-0">
-        <div className="container mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <div className="border-b border-white/5 bg-black/40 backdrop-blur-xl sticky top-14 sm:top-16 z-50">
+        <div className="container mx-auto px-4 h-16 sm:h-20 flex items-center justify-between gap-8">
+          <div className="flex items-center gap-6">
             <Link to="/admin/scanner" className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-1 text-xs uppercase font-bold tracking-widest">
               <Camera size={14} /> Scanner
             </Link>
             <div className="h-4 w-[1px] bg-white/10" />
             <h1 className="font-display text-lg tracking-tight text-glow-teal font-bold uppercase">Dashboard</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-6">
             <Button variant="outline" size="sm" onClick={fetchData} disabled={isLoading} className="text-[10px] uppercase font-bold tracking-widest gap-2 bg-transparent border-white/10 hover:bg-white/5">
               <RefreshCcw size={14} className={isLoading ? "animate-spin" : ""} />
               Refresh
@@ -139,16 +190,47 @@ const AdminDashboard = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard title="Total Participants" value={stats.total} icon={<Users className="text-primary" size={20} />} accent="primary" />
           <StatCard title="Present (Checked-in)" value={stats.present} icon={<CheckCircle2 className="text-fest-teal" size={20} />} accent="teal" />
           <StatCard title="Absent" value={stats.absent} icon={<XCircle className="text-fest-purple" size={20} />} accent="purple" />
         </div>
 
+        {/* Dept breakdown Cards */}
+        {Object.keys(stats.departments).length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground mb-4">Department Attendance Breakdown</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {Object.entries(stats.departments).map(([dept, data]) => (
+                <motion.div 
+                  key={dept} 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="glass-pandora border-white/5 bg-white/[0.02] p-4 rounded-2xl flex flex-col items-center justify-center text-center group hover:border-primary/20 transition-all cursor-default"
+                >
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-1 line-clamp-1">{dept}</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-bold font-display text-white">{data.present}</span>
+                    <span className="text-[10px] text-muted-foreground">/ {data.total}</span>
+                  </div>
+                  {/* Progress bar */}
+                  <div className="w-full h-1 bg-white/5 rounded-full mt-3 overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(data.present / data.total) * 100}%` }}
+                      className="h-full bg-fest-teal shadow-[0_0_10px_rgba(0,247,255,0.5)]"
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Filters and Search */}
         <Card className="glass-pandora border-white/5 bg-white/[0.02] mb-8">
           <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               <div className="relative flex-1 group">
                 <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input 
@@ -158,18 +240,33 @@ const AdminDashboard = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div className="w-full md:w-64">
-                <Select value={eventFilter} onValueChange={setEventFilter}>
-                  <SelectTrigger className="bg-black/40 border-white/10 focus:border-primary/50 text-xs sm:text-sm font-bold uppercase tracking-widest">
-                    <SelectValue placeholder="All Events" />
-                  </SelectTrigger>
-                  <SelectContent className="glass-pandora border-white/10 text-white">
-                    <SelectItem value="all">All Events</SelectItem>
-                    {uniqueEvents.map(e => (
-                      <SelectItem key={e} value={e}>{e}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="flex flex-wrap gap-4">
+                <div className="w-full sm:w-48">
+                  <Select value={eventFilter} onValueChange={setEventFilter}>
+                    <SelectTrigger className="bg-black/40 border-white/10 focus:border-primary/50 text-xs sm:text-sm font-bold uppercase tracking-widest">
+                      <SelectValue placeholder="All Events" />
+                    </SelectTrigger>
+                    <SelectContent className="glass-pandora border-white/10 text-white">
+                      <SelectItem value="all">All Events</SelectItem>
+                      {uniqueEvents.map(e => (
+                        <SelectItem key={e} value={e}>{e}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="w-full sm:w-48">
+                  <Select value={deptFilter} onValueChange={setDeptFilter}>
+                    <SelectTrigger className="bg-black/40 border-white/10 focus:border-primary/50 text-xs sm:text-sm font-bold uppercase tracking-widest">
+                      <SelectValue placeholder="All Depts" />
+                    </SelectTrigger>
+                    <SelectContent className="glass-pandora border-white/10 text-white">
+                      <SelectItem value="all">All Departments</SelectItem>
+                      {uniqueDepts.map(d => (
+                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </CardContent>
@@ -206,8 +303,11 @@ const AdminDashboard = () => {
                     <td className="p-4 text-sm font-medium">{p.event}</td>
                     <td className="p-4 text-[10px] font-bold uppercase text-primary/70">{p.department}</td>
                     <td className="p-4 font-mono text-xs">{p.phone}</td>
-                    <td className="p-4">
-                      <AttendanceBadge present={p.attendance === true || p.attendance === "true" || p.attendance === "Present"} />
+                    <td className="p-4" onClick={() => handleAttendanceToggle(p.id, p.attendance)}>
+                      <AttendanceBadge 
+                        present={p.attendance === true || p.attendance === "true" || p.attendance === "Present"} 
+                        interactive
+                      />
                     </td>
                   </motion.tr>
                 ))
@@ -240,8 +340,10 @@ const StatCard = ({ title, value, icon, accent }: { title: string; value: number
   </Card>
 );
 
-const AttendanceBadge = ({ present }: { present: boolean }) => (
-  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+const AttendanceBadge = ({ present, interactive }: { present: boolean; interactive?: boolean }) => (
+  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all ${
+    interactive ? "cursor-pointer hover:scale-105 active:scale-95" : ""
+  } ${
     present ? "bg-fest-teal/15 text-fest-teal border border-fest-teal/30 shadow-[0_0_10px_rgba(0,247,255,0.1)]" : "bg-destructive/15 text-destructive border border-destructive/30"
   }`}>
     <span className={`w-1.5 h-1.5 rounded-full ${present ? "bg-fest-teal animate-pulse" : "bg-destructive"}`} />

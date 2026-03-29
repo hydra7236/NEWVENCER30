@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
+import { Download } from "lucide-react";
 import vencerLogo from "@/assets/vencer-logo.png";
 
 const navLinks = [
@@ -18,21 +19,39 @@ const navLinks = [
 const Navbar = memo(() => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const location = useLocation();
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const numbersRef = useRef<(HTMLSpanElement | null)[]>([]);
-  const busyRef = useRef(false);
 
   useEffect(() => {
     document.documentElement.classList.add("dark");
     document.documentElement.classList.remove("light");
+    
+    // PWA Install Prompt
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
   }, []);
 
-
-
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === "accepted") {
+          console.log("User accepted the install prompt");
+        }
+        setDeferredPrompt(null);
+      });
+    }
+  };
 
   const openMenuAction = useCallback(() => {
     document.body.style.overflow = "hidden";
@@ -133,35 +152,57 @@ const Navbar = memo(() => {
                 {l.label}
               </Link>
             ))}
+            
+            {/* Download Button (Desktop) */}
+            {deferredPrompt && (
+              <button
+                onClick={handleInstallClick}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/10 border-2 border-primary/20 text-primary hover:bg-primary/20 transition-all duration-300 group"
+              >
+                <Download size={16} className="group-hover:animate-bounce" />
+                <span className="font-heading text-xs font-bold uppercase tracking-widest">App</span>
+              </button>
+            )}
           </div>
 
-          {/* Mobile toggle */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden z-[60] flex items-center justify-center gap-2 text-foreground p-3 min-w-[48px] min-h-[48px] rounded-full active:bg-white/10 transition-colors"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-          >
-            <span className="font-heading text-xs font-bold uppercase tracking-widest">
-              {open ? "Close" : "Menu"}
-            </span>
-            <span className="relative w-6 h-6 flex items-center justify-center">
-              <span
-                className={`absolute w-5 h-[2px] bg-current transition-all duration-300 ${
-                  open ? "rotate-45" : "-translate-y-1"
-                }`}
-              />
-              <span
-                className={`absolute w-5 h-[2px] bg-current transition-all duration-300 ${
-                  open ? "-rotate-45" : "translate-y-1"
-                }`}
-              />
-            </span>
-          </button>
+          {/* Mobile toggle & Download */}
+          <div className="flex items-center gap-2 lg:hidden z-[60]">
+             {deferredPrompt && (
+              <button
+                onClick={handleInstallClick}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 border-2 border-primary/20 text-primary"
+                aria-label="Download App"
+              >
+                <Download size={18} />
+              </button>
+            )}
+            
+            <button
+              onClick={toggleMenu}
+              className="flex items-center justify-center gap-2 text-foreground p-3 min-w-[48px] min-h-[48px] rounded-full active:bg-white/10 transition-colors"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+            >
+              <span className="font-heading text-xs font-bold uppercase tracking-widest">
+                {open ? "Close" : "Menu"}
+              </span>
+              <span className="relative w-6 h-6 flex items-center justify-center">
+                <span
+                  className={`absolute w-5 h-[2px] bg-current transition-all duration-300 ${
+                    open ? "rotate-45" : "-translate-y-1"
+                  }`}
+                />
+                <span
+                  className={`absolute w-5 h-[2px] bg-current transition-all duration-300 ${
+                    open ? "-rotate-45" : "translate-y-1"
+                  }`}
+                />
+              </span>
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* Staggered color layers */}
       <div ref={layersRef} className="fixed inset-0 z-[580] pointer-events-none lg:hidden" style={{ visibility: open ? "visible" : "hidden" }}>
         <div
           className="menu-layer absolute inset-0"
@@ -179,7 +220,6 @@ const Navbar = memo(() => {
         />
       </div>
 
-      {/* Fullscreen menu overlay */}
       <div
         ref={overlayRef}
         className="fixed inset-0 z-[590] flex-col justify-center lg:hidden"
@@ -190,7 +230,6 @@ const Navbar = memo(() => {
           background: "linear-gradient(160deg, hsl(var(--background)) 0%, hsl(220 30% 8%) 50%, hsl(var(--background)) 100%)" 
         }}
       >
-        {/* Subtle glow accent */}
         <div className="absolute bottom-0 left-0 w-[60%] h-[40%] bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--fest-teal)_/_0.15)_0%,transparent_70%)] pointer-events-none" />
         <div className="absolute top-0 right-0 w-[40%] h-[30%] bg-[radial-gradient(ellipse_at_top_right,hsl(var(--fest-purple)_/_0.1)_0%,transparent_70%)] pointer-events-none" />
 

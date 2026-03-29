@@ -4,24 +4,52 @@ import { Mail, Phone, MapPin, Instagram, User, ExternalLink } from "lucide-react
 const coordinators = [
   {
     dept: "Artificial Intelligence & Data Science",
-    lead1: { name: "Neki Jain", phone: "+91 7568676897" },
-    lead2: { name: "Rahul Sharma", phone: "+91 98765 43220" }
+    lead1: { name: "Neki J.", phone: "7568676897" },
+    lead2: { name: "Ramesh H.", phone: "73532 04108" }
   },
   {
     dept: "Computer Science & Engineering",
-    lead1: { name: "Priya Patel", phone: "+91 98765 43211" },
-    lead2: { name: "Amit Kumar", phone: "+91 98765 43221" }
+    lead1: { name: "Shreedhar S.", phone: "8884608943" },
+    lead2: { name: "Srushti B.", phone: "8431976442" }
+  },
+  {
+    dept: "Robotics & Automation",
+    lead1: { name: "Yasirahmad R.", phone: "8951450068" },
+    lead2: { name: "Abhinandan I.", phone: "8660569165" }
+  },
+  {
+    dept: "Electronics & Communication",
+    lead1: { name: "Megha B.", phone: "6363767116" },
+    lead2: { name: "Chetan H.", phone: "88674 72005" }
   },
   {
     dept: "Mechanical Engineering",
-    lead1: { name: "Rohit Singh", phone: "+91 98765 43212" },
-    lead2: { name: "Sneha Reddy", phone: "+91 98765 43222" }
+    lead1: { name: "Prathamesh P.", phone: "9113281234" },
+    lead2: { name: "Pradeep K.", phone: "8197898550" }
+  },
+  {
+    dept: "Electrical & Electronics",
+    lead1: { name: "Shubham B.", phone: "8904308926" },
+    lead2: { name: "Shridevi B.", phone: "9353924390" }
   },
   {
     dept: "Civil Engineering",
-    lead1: { name: "Vikram Joshi", phone: "+91 98765 43213" },
-    lead2: { name: "Anita Desai", phone: "+91 98765 43223" }
+    lead1: { name: "Parth P.", phone: "7026611587" },
+    lead2: { name: "Ritesh S.", phone: "9164848342" }
+  },
+  {
+    dept: "Bachelor of Computer Applications",
+    lead1: { name: "Sushil S.", phone: "9353362031" },
+    lead2: { name: "Ruchita N.", phone: "7411487463" }
   }
+];
+
+const patrons = [
+  { role: "Chief Patron", name: "Mrs. Shradha Angadi (Shettar)", sub: "Director, SAEF" },
+  { role: "Chief Patron", name: "Dr. Spoorti Patil", sub: "Director, SAEF" },
+  { role: "Patron", name: "Dr. Anand Deshpande", sub: "Principal & Director, AITM" },
+  { role: "Patron", name: "Mr. Raju Joshi", sub: "Administrator, SAEF" },
+  { role: "Faculty Co-ordinator", name: "Prof. Gautam Dematti", sub: "Cultural Secretary" },
 ];
 
 const ContactSection = () => {
@@ -77,6 +105,35 @@ const ContactSection = () => {
           ))}
         </div>
 
+        {/* Patrons & Faculty Section */}
+        <div className="max-w-6xl mx-auto mb-24">
+          <motion.h3 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="font-display text-2xl text-white mb-10 tracking-wider uppercase border-l-4 border-primary pl-6"
+          >
+            Patrons & Faculty
+          </motion.h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {patrons.map((p, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="glass p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all duration-300"
+              >
+                <div className="text-primary text-[10px] font-display tracking-[0.2em] uppercase mb-2">{p.role}</div>
+                <div className="text-white font-heading font-bold mb-1">{p.name}</div>
+                <div className="text-white/40 text-xs font-body">{p.sub}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
         {/* Student Coordinators Section */}
         <div className="max-w-6xl mx-auto mb-24">
           <motion.h3 
@@ -88,7 +145,7 @@ const ContactSection = () => {
             Student Coordinators
           </motion.h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {coordinators.map((dept, idx) => (
               <motion.div
                 key={idx}
@@ -96,20 +153,20 @@ const ContactSection = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="glass p-8 rounded-2xl border border-white/5 hover:border-primary/30 transition-all duration-500"
+                className="glass p-6 rounded-2xl border border-white/5 hover:border-primary/30 transition-all duration-500"
               >
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-                    <User className="text-purple-400" size={24} />
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                    <User className="text-purple-400" size={20} />
                   </div>
-                  <h4 className="font-heading text-white font-bold tracking-wide">{dept.dept}</h4>
+                  <h4 className="font-heading text-white text-sm font-bold tracking-wide">{dept.dept}</h4>
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-4">
                   {[dept.lead1, dept.lead2].map((lead, lIdx) => (
                     <div key={lIdx} className="space-y-1">
-                      <div className="text-white/80 font-body text-sm font-semibold">{lead.name}</div>
-                      <a href={`tel:${lead.phone}`} className="text-primary/80 hover:text-primary transition-colors text-xs font-mono tracking-tighter block">
+                      <div className="text-white/80 font-body text-xs font-semibold">{lead.name}</div>
+                      <a href={`tel:${lead.phone}`} className="text-primary/70 hover:text-primary transition-colors text-[10px] font-mono tracking-tighter block">
                         {lead.phone}
                       </a>
                     </div>
